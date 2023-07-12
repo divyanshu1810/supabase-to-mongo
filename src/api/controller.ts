@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import { handleGetImages, handleUploaddImage } from "./service";
 
+export const healthCheck = (req: Request, res: Response) => {
+  res.status(200).send({
+    success: true,
+    message: "Server is running",
+  });
+};
+
 export const uploadImage = async (req: Request, res: Response) => {
   try {
     const file = req.file;
@@ -23,13 +30,11 @@ export const uploadImage = async (req: Request, res: Response) => {
 export const getImages = async (req: Request, res: Response) => {
   try {
     const data = await handleGetImages();
-    res
-      .status(200)
-      .send({
-        success: true,
-        message: "All images fetched successfully",
-        data,
-      });
+    res.status(200).send({
+      success: true,
+      message: "All images fetched successfully",
+      data,
+    });
   } catch (error) {
     res.status(500).send({
       success: false,
