@@ -1,11 +1,19 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import { router } from "./api/router";
+import { connectToSupabase } from "./database";
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.get("/healthcheck", (req: Request, res: Response) => {
+  res.status(200).send({
+    success: true,
+    message: "Server is running",
+  });
 });
 
-app.listen(port, () => {
+app.use(router);
+
+app.listen(port, async () => {
+  await connectToSupabase();
   return console.log(`Express is listening at http://localhost:${port}`);
 });
