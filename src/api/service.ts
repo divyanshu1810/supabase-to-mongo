@@ -2,9 +2,9 @@ import config from "../config";
 import { supabase } from "../database";
 import { removeSpaces } from "../utils";
 
-export const handleUploaddImage = async (file: Express.Multer.File) => {
+export const handleUploadImage = async (file: Express.Multer.File) => {
   const fileName = removeSpaces(file.originalname);
-  const { data, error } = await await supabase.storage
+  const { data, error } = await supabase.storage
     .from(config.bucketName)
     .upload(fileName, file.buffer, {
       contentType: file.mimetype,
@@ -13,6 +13,23 @@ export const handleUploaddImage = async (file: Express.Multer.File) => {
     throw new Error(error.message);
   }
   return data;
+};
+
+export const handleUploadImages = async (files: Express.Multer.File[]) => {
+  const promises = [];
+  for (const file of files) {
+    const fileName = removeSpaces(file.originalname);
+    const { data, error } = await supabase.storage
+      .from(config.bucketName)
+      .upload(fileName, file.buffer, {
+        contentType: file.mimetype,
+      });
+    if (error) {
+      throw new Error(error.message);
+    }
+    promises.push(data);
+  }
+  return promises;
 };
 
 export const handleGetImages = async () => {
