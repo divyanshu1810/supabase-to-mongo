@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import {
   handleGetImages,
+  handleGetImagesURLFromMongo,
   handleUploadImage,
+  handleUploadImageURLToMongo,
   handleUploadImages,
+  handleUploadImagesURLToMongo,
 } from "./service";
 
 export const healthCheck = (req: Request, res: Response) => {
@@ -54,6 +57,63 @@ export const uploadImages = async (req: Request, res: Response) => {
 export const getImages = async (req: Request, res: Response) => {
   try {
     const data = await handleGetImages();
+    res.status(200).send({
+      success: true,
+      message: "All images fetched successfully",
+      data,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      error: "Internal server error",
+    });
+  }
+};
+
+export const uploadImageURLToMongo = async (req: Request, res: Response) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      res.status(400).send({ error: "No file uploaded" });
+      return;
+    }
+    const data = await handleUploadImageURLToMongo(file);
+    res.status(200).json({
+      success: true,
+      message: "Image URL uploaded successfully to MongoDB",
+      data,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      error: "Unable to upload Image",
+    });
+  }
+};
+
+export const uploadImagesURLToMongo = async (req: Request, res: Response) => {
+  try {
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length == 0) {
+      res.status(400).send({ success: false, error: "No file uploaded" });
+    }
+    const data = await handleUploadImagesURLToMongo(files);
+    res.status(200).json({
+      success: true,
+      message: `${files.length} Images uploaded successfully`,
+      data,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      error: "Unable to upload Images",
+    });
+  }
+};
+
+export const getImagesFromMongo = async (req: Request, res: Response) => {
+  try {
+    const data = await handleGetImagesURLFromMongo();
     res.status(200).send({
       success: true,
       message: "All images fetched successfully",
