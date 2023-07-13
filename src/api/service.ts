@@ -12,7 +12,11 @@ export const handleUploadImage = async (file: Express.Multer.File) => {
   if (error) {
     throw new Error(error.message);
   }
-  return data;
+
+  const url = `${config.databaseURL}/storage/v1/object/public/${config.bucketName}/${fileName}`;
+  const dataWithUrl = { ...data, url };
+
+  return dataWithUrl;
 };
 
 export const handleUploadImages = async (files: Express.Multer.File[]) => {
@@ -24,10 +28,12 @@ export const handleUploadImages = async (files: Express.Multer.File[]) => {
       .upload(fileName, file.buffer, {
         contentType: file.mimetype,
       });
+    const url = `${config.databaseURL}/storage/v1/object/public/${config.bucketName}/${fileName}`;
+    const dataWithUrl = { ...data, url };
     if (error) {
       throw new Error(error.message);
     }
-    promises.push(data);
+    promises.push(dataWithUrl);
   }
   return promises;
 };
