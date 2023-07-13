@@ -8,7 +8,12 @@ export default {
   port: process.env.PORT,
 
   /**
-   * Database the app should connect to
+   * MongoDB the app should connect to
+   */
+  mongoURL: process.env.MONGODB_URI,
+
+  /**
+   * Supabase the app should connect to
    */
   databaseURL: process.env.SUPABASE_URL,
 
