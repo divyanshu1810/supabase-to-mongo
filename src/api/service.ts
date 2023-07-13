@@ -81,9 +81,9 @@ export const handleUploadImagesURLToMongo = async (
   files: Express.Multer.File[]
 ) => {
   const imagesData = [];
+  const collection = (await database()).collection("ImageURL");
   for (const file of files) {
     const fileName = removeSpaces(file.originalname);
-    const collection = (await database()).collection("ImageURL");
     const { data, error } = await supabase.storage
       .from(config.bucketName)
       .upload(fileName, file.buffer, {
