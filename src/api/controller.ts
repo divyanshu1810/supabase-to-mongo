@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   handleGetImages,
   handleGetImagesURLFromMongo,
@@ -7,122 +7,143 @@ import {
   handleUploadImages,
   handleUploadImagesURLToMongo,
 } from "./service";
+import { RESPONSES } from "../shared/constants";
 
 export const healthCheck = (req: Request, res: Response) => {
-  res.status(200).send({
-    success: true,
-    message: "Server is running",
+  res.status(RESPONSES.HEALTH_CHECK.code).send({
+    success: RESPONSES.HEALTH_CHECK.message.success,
+    message: RESPONSES.HEALTH_CHECK.message.description,
   });
 };
 
-export const uploadImage = async (req: Request, res: Response) => {
+export const uploadImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const file = req.file;
     if (!file) {
-      res.status(400).send({ error: "No file uploaded" });
+      res.status(RESPONSES.NOFILEUPLOADED.code).send({
+        succes: RESPONSES.NOFILEUPLOADED.message.success,
+        error: RESPONSES.NOFILEUPLOADED.message.description,
+      });
       return;
     }
     const data = await handleUploadImage(file);
-    res
-      .status(200)
-      .json({ success: true, message: "Image uploaded successfully", data });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      error: "Unable to upload Image",
+    res.status(RESPONSES.UPLOADIMAGE.code).send({
+      success: RESPONSES.UPLOADIMAGE.message.success,
+      message: RESPONSES.UPLOADIMAGE.message.description,
+      data,
     });
+  } catch (error) {
+    next(error);
   }
 };
 
-export const uploadImages = async (req: Request, res: Response) => {
+export const uploadImages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const files = req.files as Express.Multer.File[];
     if (!files || files.length == 0) {
-      res.status(400).send({ success: false, error: "No file uploaded" });
+      res.status(RESPONSES.NOFILEUPLOADED.code).send({
+        success: RESPONSES.NOFILEUPLOADED.message.success,
+        error: RESPONSES.NOFILEUPLOADED.message.description,
+      });
     }
     const data = await handleUploadImages(files);
-    res.status(200).json({
-      success: true,
-      message: `${files.length} Images uploaded successfully`,
+    res.status(RESPONSES.UPLOADIMAGES.code).send({
+      success: RESPONSES.UPLOADIMAGES.message.success,
+      message: `${files.length} ${RESPONSES.UPLOADIMAGES.message.description}`,
       data,
     });
   } catch (error) {
-    res.status(500).send({
-      success: false,
-      error: "Unable to upload Images",
-    });
+    next(error);
   }
 };
 
-export const getImages = async (req: Request, res: Response) => {
+export const getImages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const data = await handleGetImages();
-    res.status(200).send({
-      success: true,
-      message: "All images fetched successfully",
+    res.status(RESPONSES.GETIMAGES.code).send({
+      success: RESPONSES.GETIMAGES.message.success,
+      message: RESPONSES.GETIMAGES.message.description,
       data,
     });
   } catch (error) {
-    res.status(500).send({
-      success: false,
-      error: "Internal server error",
-    });
+    next(error);
   }
 };
 
-export const uploadImageURLToMongo = async (req: Request, res: Response) => {
+export const uploadImageURLToMongo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const file = req.file;
     if (!file) {
-      res.status(400).send({ error: "No file uploaded" });
+      res.status(RESPONSES.NOFILEUPLOADED.code).send({
+        success: RESPONSES.NOFILEUPLOADED.message.success,
+        error: RESPONSES.NOFILEUPLOADED.message.description,
+      });
       return;
     }
     const data = await handleUploadImageURLToMongo(file);
-    res.status(200).json({
-      success: true,
-      message: "Image URL uploaded successfully to MongoDB",
+    res.status(RESPONSES.UPLOADIMAGETOMONGO.code).send({
+      success: RESPONSES.UPLOADIMAGETOMONGO.message.success,
+      message: RESPONSES.UPLOADIMAGETOMONGO.message.description,
       data,
     });
   } catch (error) {
-    res.status(500).send({
-      success: false,
-      error: "Unable to upload Image",
-    });
+    next(error);
   }
 };
 
-export const uploadImagesURLToMongo = async (req: Request, res: Response) => {
+export const uploadImagesURLToMongo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const files = req.files as Express.Multer.File[];
     if (!files || files.length == 0) {
-      res.status(400).send({ success: false, error: "No file uploaded" });
+      res.status(RESPONSES.NOFILEUPLOADED.code).send({
+        success: RESPONSES.NOFILEUPLOADED.message.success,
+        error: RESPONSES.NOFILEUPLOADED.message.description,
+      });
     }
     const data = await handleUploadImagesURLToMongo(files);
-    res.status(200).json({
-      success: true,
-      message: `${files.length} Images uploaded successfully`,
+    res.status(RESPONSES.UPLOADIMAGESTOMONGO.code).send({
+      success: RESPONSES.UPLOADIMAGESTOMONGO.message.success,
+      message: `${files.length} ${RESPONSES.UPLOADIMAGESTOMONGO.message.description}}`,
       data,
     });
   } catch (error) {
-    res.status(500).send({
-      success: false,
-      error: "Unable to upload Images",
-    });
+    next(error);
   }
 };
 
-export const getImagesFromMongo = async (req: Request, res: Response) => {
+export const getImagesFromMongo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const data = await handleGetImagesURLFromMongo();
-    res.status(200).send({
-      success: true,
-      message: "All images fetched successfully",
+    res.status(RESPONSES.GETIMAGESFROMMONGO.code).send({
+      success: RESPONSES.GETIMAGESFROMMONGO.message.success,
+      message: RESPONSES.GETIMAGESFROMMONGO.message.description,
       data,
     });
   } catch (error) {
-    res.status(500).send({
-      success: false,
-      error: "Internal server error",
-    });
+    next(error);
   }
 };
