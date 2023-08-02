@@ -47,3 +47,18 @@ Technologies Used
 * MongoDB: Database for storing image URLs
 * Multer: Middleware for handling multipart/form-data (image uploads)
 * PNPM: Package manager
+
+### Pictures
+#### Postman
+![image](https://github.com/divyanshu1810/supabase-to-mongo/assets/91051053/c81b3426-14c0-4b95-80b1-aa4cc8926ff0)
+
+#### Supabase
+![image](https://github.com/divyanshu1810/supabase-to-mongo/assets/91051053/eed2f783-b662-48d4-a631-10c8a7a1686c)
+
+#### MongoDB
+![image](https://github.com/divyanshu1810/supabase-to-mongo/assets/91051053/e8605cd3-1965-4e57-bc97-874f761b6e02)
+
+#### URL
+![image](https://github.com/divyanshu1810/supabase-to-mongo/assets/91051053/e2477a24-1cbd-4969-98e7-bacd511deebb)
+
+
